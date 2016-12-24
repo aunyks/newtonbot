@@ -377,13 +377,13 @@ function sendFileMessage(recipientId) {
  *
  */
 function sendTextMessage(recipientId, messageText) {
-  newton(messageText, function(response){
+  newton(messageText, function(_response){
     var messageData = {
       recipient: {
         id: recipientId
       },
       message: {
-        text: response,
+        text: _response,
         metadata: "DEVELOPER_DEFINED_METADATA"
       }
     };
