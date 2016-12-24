@@ -1,4 +1,3 @@
-// Verify Token: with-processes-of-swiftness-and-speed-to-do-your-math-is-my-deed
 'use strict';
 
 const
