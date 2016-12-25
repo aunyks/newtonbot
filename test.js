@@ -21,7 +21,7 @@ app.use(express.static('public'));
  *
  */
 
-ngrok.connect(5000, function (err, url) {
+ngrok.connect({ addr: 5000, subdomain: 'newtonbot' }, function (err, url) {
 
   // App Secret can be retrieved from the App Dashboard
   const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
