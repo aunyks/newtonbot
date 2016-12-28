@@ -2,5 +2,9 @@
     "appSecret": "aa018a80181f54d0d4ea0e3d7311ccd7",
     "pageAccessToken": "EAAaHw5FOYqcBAAh9Jb4dGZBvo6exYzTovSHWZCwHftuQ9k2naa30YjTQnz8sEBiPed0t2gKFVBHADFCK1ZAHcrx1HPRRYNhAk3vScrDWHlZAp0KM5PgciR0XHX1nkkEh87QNp9WXdr8QI2Q6gJ2ZBxWow9bG6u6GE07RKuUFYzAZDZD",
     "validationToken": "with-processes-of-swiftness-and-speed-to-do-your-math-is-my-deed",
-    "serverURL": "https://newtonbot.now.sh/"
+    "serverURL": "https://newtonbot.now.sh/",
+    "twitterConsumerKey": "1NDLW7S7ffto3W1usYUxIXvpd",
+    "twitterConsumerSecret": "69B4l54OssNVtTBqGYIbdS38er369JafDu9eX4zwUppeoC8Dm7",
+    "twitterAccessTokenKey": "813490006048251904-k1uxCUlrIMDsHSsryv9uiZxUTje7apV",
+    "twitterAccessTokenSecret": "E9WPM1GrGKbq5t9JuC0e6i26KvNPYijzovAbdN9EOhMVh"
 }

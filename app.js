@@ -7,7 +7,8 @@ const
   express    = require('express'),
   https      = require('https'),
   request    = require('request'),
-  newton     = require('./bot.js');
+  newton     = require('./src/bot.js'),
+  twitter    = require('./src/twitclient.js');
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
@@ -231,5 +232,19 @@ function callSendAPI(messageData) {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
+
+setInterval(function(){
+  (function(){
+    twitter.getDMs(twitter.SINCE_ID, function(DMs){
+      DMs.forEach(function(dm){
+        (function(dm){
+          newton(dm.msg, function(resp){
+            twitter.respondDMs(dm.user, resp, function(){});
+          });
+        })(dm);
+      });
+    });
+  })();
+}, 60000);
 
 module.exports = app;

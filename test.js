@@ -7,12 +7,14 @@ const
   express    = require('express'),
   https      = require('https'),
   request    = require('request'),
-  newton     = require('./bot.js'),
-  ngrok      = require('ngrok');
+  newton     = require('./src/bot.js'),
+  ngrok      = require('ngrok'),
+  twitter    = require('./src/twitclient.js');
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'ejs');
+app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.use(express.static('public'));
 
 /*
@@ -156,102 +158,42 @@ ngrok.connect({ addr: 5000, subdomain: 'newtonbot' }, function (err, url) {
     }
 
     if (messageText) {
-
-      // If we receive a text message, check to see if it matches any special
-      // keywords and send back the corresponding example. Otherwise, just echo
-      // the text we received.
-      switch (messageText) {
-        case 'image':
-          sendImageMessage(senderID);
-          break;
-
-        case 'gif':
-          sendGifMessage(senderID);
-          break;
-
-        case 'audio':
-          sendAudioMessage(senderID);
-          break;
-
-        case 'video':
-          sendVideoMessage(senderID);
-          break;
-
-        case 'file':
-          sendFileMessage(senderID);
-          break;
-
-        case 'button':
-          sendButtonMessage(senderID);
-          break;
-
-        case 'generic':
-          sendGenericMessage(senderID);
-          break;
-
-        case 'receipt':
-          sendReceiptMessage(senderID);
-          break;
-
-        case 'quick reply':
-          sendQuickReply(senderID);
-          break;
-
-        case 'read receipt':
-          sendReadReceipt(senderID);
-          break;
-
-        case 'typing on':
-          sendTypingOn(senderID);
-          break;
-
-        case 'typing off':
-          sendTypingOff(senderID);
-          break;
-
-        default:
           sendTextMessage(senderID, messageText);
-      }
     } else if (messageAttachments) {
       sendTextMessage(senderID, "Message with attachment received");
     }
   }
 
-
   /*
-   * Delivery Confirmation Event
+   * Verify that the callback came from Facebook. Using the App Secret from
+   * the App Dashboard, we can verify the signature that is sent with each
+   * callback in the x-hub-signature field, located in the header.
    *
-   * This event is sent to confirm the delivery of a message. Read more about
-   * these fields at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
+   * https://developers.facebook.com/docs/graph-api/webhooks#setup
    *
    */
-  function receivedDeliveryConfirmation(event) {
-    var senderID = event.sender.id;
-    var recipientID = event.recipient.id;
-    var delivery = event.delivery;
-    var messageIDs = delivery.mids;
-    var watermark = delivery.watermark;
-    var sequenceNumber = delivery.seq;
+  function verifyRequestSignature(req, res, buf) {
+    var signature = req.headers["x-hub-signature"];
 
-    if (messageIDs) {
-      messageIDs.forEach(function(messageID) {
-        console.log("Received delivery confirmation for message ID: %s",
-          messageID);
-      });
+    if (!signature) {
+      // For testing, let's log an error. In production, you should throw an
+      // error.
+      console.error("Couldn't validate the signature.");
+    } else {
+      var elements = signature.split('=');
+      var method = elements[0];
+      var signatureHash = elements[1];
+
+      var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+                          .update(buf)
+                          .digest('hex');
+
+      if (signatureHash != expectedHash) {
+        throw new Error("Couldn't validate the request signature.");
+      }
     }
-
-    console.log("All message before %d were delivered.", watermark);
   }
 
-
-
-  /*
-   * Message Read Event
-   *
-   * This event is called when a previously-sent message has been read.
-   * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
-   *
-   */
   function receivedMessageRead(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
@@ -264,174 +206,19 @@ ngrok.connect({ addr: 5000, subdomain: 'newtonbot' }, function (err, url) {
       "number %d", watermark, sequenceNumber);
   }
 
-  /*
-   * Send a text message using the Send API.
-   *
-   */
   function sendTextMessage(recipientId, messageText) {
-    //newton(messageText, function(_response){
+    newton(messageText, function(_response){
       var messageData = {
         recipient: {
           id: recipientId
         },
         message: {
-          text: messageText,
+          text: _response,
           metadata: "DEVELOPER_DEFINED_METADATA"
         }
       };
       callSendAPI(messageData);
-    //});
-  }
-
-  /*
-   * Send a receipt message using the Send API.
-   *
-   */
-  function sendReceiptMessage(recipientId) {
-    // Generate a random receipt ID as the API requires a unique ID
-    var receiptId = "order" + Math.floor(Math.random()*1000);
-
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message:{
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "receipt",
-            recipient_name: "Peter Chang",
-            order_number: receiptId,
-            currency: "USD",
-            payment_method: "Visa 1234",
-            timestamp: "1428444852",
-            elements: [{
-              title: "Oculus Rift",
-              subtitle: "Includes: headset, sensor, remote",
-              quantity: 1,
-              price: 599.00,
-              currency: "USD",
-              image_url: SERVER_URL + "/assets/riftsq.png"
-            }, {
-              title: "Samsung Gear VR",
-              subtitle: "Frost White",
-              quantity: 1,
-              price: 99.99,
-              currency: "USD",
-              image_url: SERVER_URL + "/assets/gearvrsq.png"
-            }],
-            address: {
-              street_1: "1 Hacker Way",
-              street_2: "",
-              city: "Menlo Park",
-              postal_code: "94025",
-              state: "CA",
-              country: "US"
-            },
-            summary: {
-              subtotal: 698.99,
-              shipping_cost: 20.00,
-              total_tax: 57.67,
-              total_cost: 626.66
-            },
-            adjustments: [{
-              name: "New Customer Discount",
-              amount: -50
-            }, {
-              name: "$100 Off Coupon",
-              amount: -100
-            }]
-          }
-        }
-      }
-    };
-
-    callSendAPI(messageData);
-  }
-
-  /*
-   * Send a message with Quick Reply buttons.
-   *
-   */
-  function sendQuickReply(recipientId) {
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        text: "What's your favorite movie genre?",
-        quick_replies: [
-          {
-            "content_type":"text",
-            "title":"Action",
-            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_ACTION"
-          },
-          {
-            "content_type":"text",
-            "title":"Comedy",
-            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_COMEDY"
-          },
-          {
-            "content_type":"text",
-            "title":"Drama",
-            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRAMA"
-          }
-        ]
-      }
-    };
-
-    callSendAPI(messageData);
-  }
-
-  /*
-   * Send a read receipt to indicate the message has been read
-   *
-   */
-  function sendReadReceipt(recipientId) {
-    console.log("Sending a read receipt to mark message as seen");
-
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      sender_action: "mark_seen"
-    };
-
-    callSendAPI(messageData);
-  }
-
-  /*
-   * Turn typing indicator on
-   *
-   */
-  function sendTypingOn(recipientId) {
-    console.log("Turning typing indicator on");
-
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      sender_action: "typing_on"
-    };
-
-    callSendAPI(messageData);
-  }
-
-  /*
-   * Turn typing indicator off
-   *
-   */
-  function sendTypingOff(recipientId) {
-    console.log("Turning typing indicator off");
-
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      sender_action: "typing_off"
-    };
-
-    callSendAPI(messageData);
+    });
   }
 
   /*
@@ -470,6 +257,20 @@ ngrok.connect({ addr: 5000, subdomain: 'newtonbot' }, function (err, url) {
   app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
   });
+
+  setTimeout(function(){
+    (function(){
+      twitter.getDMs(function(DMs){
+        DMs.forEach(function(dm){
+          (function(dm){
+            newton(dm.msg, function(resp){
+              twitter.respondDMs(dm.user, resp, function(){});
+            });
+          })(dm);
+        });
+      });
+    })();
+  }, 5000);
 
   module.exports = app;
   console.log('Dev URL: '+url);
