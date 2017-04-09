@@ -19,7 +19,7 @@
     "twitter": "^1.7.0"
   },
   "now": {
-    "aliases": ["newtonbot.now.sh"]
+    "alias": "newtonbot.now.sh"
   },
   "devDependencies": {
     "ngrok": "^2.2.4"
