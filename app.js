@@ -233,7 +233,7 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-setInterval(function(){
+/*setInterval(function(){
   (function(){
     twitter.getDMs(twitter.SINCE_ID, function(DMs){
       DMs.forEach(function(dm){
@@ -245,6 +245,6 @@ setInterval(function(){
       });
     });
   })();
-}, 60000);
+}, 60000);*/
 
 module.exports = app;
