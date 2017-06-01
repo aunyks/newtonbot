@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>How to use NewtonBot</title>
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.7.0/css/tachyons.min.css"/>
+    <style>
+      html {
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
+      body {
+        margin: 5%;
+      }
+
+      a:visited {
+        color: black;
+      }
+
+      code {
+        background: #eee;
+        font-size: 14px;
+      }
+
+      table, thead, tr {
+        width: 100%;
+        height: 40px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="isaac-newton.jpg" height="200" width="150" style="border-radius:90%;">
+    <h1>How to use NewtonBot</h1>
+    <p>
+      Although he can do some pretty hard math problems, NewtonBot isn't the smartest of robots
+      , so you kinda have to talk down to him in a pretty simple manner. He takes simple commands like the ones you
+      see below. All you have to do is give him a command and something to work with and boom! He'll do it! But, if for 
+      whatever reason he doesn't, then he'll let you know he didn't understand, and he'll remind you how to talk to him.
+      If you have any further questions on how to get the most out of your conversation with him, don't hesitate to DM or 
+      @ <a style="color: black;" href="https://twitter.com/aunyks">me on Twitter.</a>
+   </p>
+   <p>
+      A simple command given to NewtonBot looks like this: <code>/operation expression</code>. Where <code>operation</code> is one of the verbs found
+      in the table below and <code>expression</code> is a number or math expression that you want NewtonBot to perform the operation on.
+   </p>
+   <p>
+      <i>
+        <strong>
+          Note: The vertical line in some commands is not a lowercase 'L' or uppercase 'I'. It is a vertical bar.
+        </strong>
+      </i>
+   </p>
+   <table>
+    <thead>
+    <tr class="striped--light-gray">
+      <strong>
+        <th>Operation</th>
+        <th>Command</th>
+        <th>Description</th>
+        <th>Example</th>
+        <th>Result</th>
+      </strong>
+    </tr>
+    </thead>
+    <tr>
+      <td>Simplify</td>
+      <td>/simplify ""</td>
+      <td>Algebraically simplify an expression.</td>
+      <td>/simplify x + x</td>
+      <td>2x</td>
+    </tr>
+    <tr>
+      <td>Factor</td>
+      <td>/factor ""</td>
+      <td>Find the factors of a polynomial expression.</td>
+      <td>/factor x^2 + 2x</td>
+      <td>x (x + 2)</td>
+    </tr>
+    <tr>
+      <td>Differentiate</td>
+      <td>/derive ""</td>
+      <td>Find the first derivative of an expression.</td>
+      <td>/derive x^2+2x</td>
+      <td>2 x + 2</td>
+    </tr>
+    <tr>
+      <td>Integrate</td>
+      <td>/integrate ""</td>
+      <td>Find the indefinite integral of an expression.</td>
+      <td>/integrate x^2+2x</td>
+      <td>1/3 x^3 + x^2 + C</td>
+    </tr>
+    <tr>
+      <td>Solve</td>
+      <td>/zeroes ""</td>
+      <td>Solve a polynomial expression.</td>
+      <td>/zeroes x^2+2x</td>
+      <td>[-2, 0]</td>
+    </tr>
+    <tr>
+      <td>Find Tangent Line</td>
+      <td>/tangent c|f(x)</td>
+      <td>Find the line tangent to the given function at c.</td>
+      <td>/tangent 2|x^3</td>
+      <td>12 x + -16</td>
+    </tr>
+    <tr>
+      <td>Calculate Area Under Curve</td>
+      <td>/area a:b|f(x)</td>
+      <td>Find the area under the given function between a and b.</td>
+      <td>/area 2:4|x^3</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <td>Cosine</td>
+      <td>/cos ""</td>
+      <td>Calculate cosine of a value.</td>
+      <td>/cos pi</td>
+      <td>-1</td>
+    </tr>
+    <tr>
+      <td>Sine</td>
+      <td>/sin ""</td>
+      <td>Calculate sine of a value.</td>
+      <td>/sin pi / 2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Tangent</td>
+      <td>/tan ""</td>
+      <td>Calculate tangent of a value.</td>
+      <td>/tan pi / 4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Inverse Cosine</td>
+      <td>/arccos ""</td>
+      <td>Calculate the arccosine of a value.</td>
+      <td>/arccos 1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>Inverse Sine</td>
+      <td>/arcsin ""</td>
+      <td>Calculate the arcsine of a value.</td>
+      <td>/arcsin 1</td>
+      <td>1 / 2 pi</td>
+    </tr>
+    <tr>
+      <td>Inverse Tangent</td>
+      <td>/arctan ""</td>
+      <td>Calculate the arctangent of a value.</td>
+      <td>/arctan 0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>Absolute Value</td>
+      <td>/abs ""</td>
+      <td>Calculate the absolute value of a number.</td>
+      <td>/abs -1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Logarithm</td>
+      <td>/log a|b</td>
+      <td>Calculate the logarithm of b with base a.</td>
+      <td>/log/2|8</td>
+      <td>3</td>
+    </tr>
+   <table>
+  </body>
+</html>
